@@ -123,8 +123,7 @@ solve for the new partial solution."""
 				nsol=deepcopy(psol)
 				nsol[i][j]="Q"
 				nsol=markX([i+1, j+1], nsol)[1]
-				ncount=qcount+1
-				solver(nsol, ncount, n) 
+				solver(nsol, qcount+1, n) 
 
 
 markQueens()
