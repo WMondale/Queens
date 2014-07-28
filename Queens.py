@@ -1,3 +1,4 @@
+from copy import deepcopy
 """
 Queens.py
 July 27, 2014
@@ -48,7 +49,7 @@ def markX(pair, brd):
 	"""Takes a position containing a queen and marks every square on the
 board that the queen could go in one move.  Returns False if a queen is present in any of the spaces to be marked, returns True otherwise.  The boolean returns
 act to end the program through function markQueens if the puzzle is invalid."""
-	brdcopy=brd[:]
+	brdcopy=deepcopy(brd)
 	noconflict=True
 	for i in range(1, 9): #fills the row/diagonals with the queen
 		if brdcopy[pair[0]-1][i-1]=="Q" and i!=pair[1]:
@@ -86,30 +87,40 @@ def markQueens():
 legally hold a queen is marked as such.  A queen is marked with a 'Q' and an
 invalid space is marked with an 'x'."""
 	global board
+	keepgoing=True
 	lst=getQueensList()
 	cnum=0
 	n=getN()
 	for i in lst:
 		board[i[0]-1][i[1]-1]="Q"
-		if not markX(i, board)[0]:
+		t=markX(i, board)
+		keepgoing=t[0]
+		board=t[1]
+		if not keepgoing:
 			print("Intersecting Queens.\n")
 			break
 		cnum=cnum+1
-	solver(board, cnum, n)
+	if keepgoing:
+		for i in board: #debug
+			print(i) #debug
+		solver(board, cnum, n)
 
 def solver(psol, qcount, n):
 	"""Places a new queen in each possible space, marks off each newly invalid space, and try to
 solve for the new partial solution."""
-	nsol=psol[:]
 	for i in range(8):
+		print("This is i: ", i) #debug
+		print("This is n: ", n) #debug
+		print("This is qcount: ", qcount) #debug
 		if qcount==n:
 			print("Count is met.")
-			for k in nsol:
+			for k in psol:
 				print(k)
 			print("About to break") #debug
 			break
 		for j in range(8):
-			if nsol[i][j]==" ":
+			if psol[i][j]==" ":
+				nsol=deepcopy(psol)
 				nsol[i][j]="Q"
 				nsol=markX([i+1, j+1], nsol)[1]
 				ncount=qcount+1
